@@ -35,8 +35,9 @@
                 android:layout_height="230dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="24dp"
-                android:layout_marginTop="50dp"
-                android:src="@drawable/logo" />
+                android:layout_marginTop="50dp"/>
+                <!--android:src="@drawable/logo"-->
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
