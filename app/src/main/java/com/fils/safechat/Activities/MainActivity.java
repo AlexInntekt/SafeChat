@@ -2,16 +2,23 @@ package com.fils.safechat.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fils.safechat.Models.Message;
 import com.fils.safechat.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +29,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -29,8 +37,14 @@ import java.util.Iterator;
 public class MainActivity extends AppCompatActivity {
 
     ListView mMessageRecyclerView;
+    Button button;
+    EditText editText;
+
     FirebaseDatabase database;
     DatabaseReference myRefToDatabase;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+
     ArrayList<String> messagesList = new ArrayList<String>();
     JSONObject messages = null;
     ArrayAdapter<String> adapter;
@@ -40,8 +54,52 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("running onCreate");
 
+        button = findViewById(R.id.sendButton);
+        button.setEnabled(false);
+
+        editText = findViewById(R.id.messageEditText);
+        editText.addTextChangedListener((new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() != 0)
+                    button.setEnabled(true);
+                else
+                    button.setEnabled(false);
+            }
+        }));
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRefToDatabase = database.getReference("messages");
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                Message message = new Message(user.getEmail(), editText.getText().toString(), Long.toString(timestamp.getTime()));
+
+                myRefToDatabase.push().setValue(message)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                editText.setText("");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            }
+                        });
+            }
+        });
 
         mMessageRecyclerView = findViewById(R.id.messageListView);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messagesList);
@@ -80,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-//        logoutButton
 
         Button logoutButton = (Button) findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
