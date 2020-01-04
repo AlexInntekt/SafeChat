@@ -51,4 +51,5 @@ public class SplashActivity extends AppCompatActivity {
         ed.putString("phoneNumber",  user.getPhoneNumber());
         ed.commit();
     }
+
 }
