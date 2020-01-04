@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_marginLeft="100dp"
-        android:textSize="50sp">
+        android:textSize="50sp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messageRecyclerView"
@@ -50,7 +50,7 @@
             android:layout_marginLeft="6dp"
             android:hint="Type your message"
             android:layout_weight="1"/>
-        
+
         <Button
             android:id="@+id/sendButton"
             android:text="Send"
