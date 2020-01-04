@@ -1,5 +1,8 @@
 package com.fils.safechat.Models;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 public class Message {
     private String author;
     private String text;
@@ -35,5 +38,16 @@ public class Message {
 
     public void setCreatedAt(String createdAt){
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString(){
+        Date date;
+        try {
+            date = new java.sql.Date(Long.parseLong(createdAt));
+        } catch(Exception e){
+            return this.text + "\n" + this.author;
+        }
+        return this.text + "\n" + this.author + " " + date;
     }
 }

@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
 
-    ArrayList<String> messagesList = new ArrayList<String>();
+    ArrayList<Message> messagesList = new ArrayList<Message>();
     JSONObject messages = null;
-    ArrayAdapter<String> adapter;
+    ArrayAdapter<Message> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mMessageRecyclerView = findViewById(R.id.messageListView);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messagesList);
+        adapter = new ArrayAdapter<Message>(this, android.R.layout.simple_list_item_1, messagesList);
         mMessageRecyclerView.setAdapter(adapter);
 
         database = FirebaseDatabase.getInstance();
@@ -121,8 +121,11 @@ public class MainActivity extends AppCompatActivity {
                         while (iterator.hasNext()) {
                             String key = iterator.next();
                             try {
-                                JSONObject message = new JSONObject(messages.get(key).toString());
-                                messagesList.add(message.get("text").toString());
+                                JSONObject messageJson = new JSONObject(messages.get(key).toString());
+                                Message message = new Message(messageJson.get("author").toString(),
+                                                                messageJson.get("text").toString(),
+                                                                messageJson.get("createdAt").toString());
+                                messagesList.add(message);
                             } catch (JSONException e) {
                                 // Something went wrong!
                             }
