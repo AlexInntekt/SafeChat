@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -38,6 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    TextView privacyPolicyTextView;
 
     public static Activity act;
 
@@ -62,11 +63,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         act = this;
         setContentView(R.layout.activity_login);
-
-        privacyPolicyTextView = (TextView)findViewById(R.id.privacy_policy);
-        Spanned text = Html.fromHtml("<a href='https://godmother-itemsplann.flycricket.io/privacy.html'>Privacy Policy</a>");
-        privacyPolicyTextView.setMovementMethod(LinkMovementMethod.getInstance());
-        privacyPolicyTextView.setText(text);
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -206,12 +202,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-/*                                // Sign in success, update UI with the signed-in user's information
+                                // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 Intent nextActivity;
                                 nextActivity = new Intent(getBaseContext(), MainActivity.class);
                                 startActivity(nextActivity);
-                                finish();*/
+                                finish();
                             } else {
                                 // If sign in fails, display a message to the user.
                                 mPasswordView.setError(getString(R.string.error_incorrect_password));
