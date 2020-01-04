@@ -43,15 +43,16 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("running onCreate");
 
 
+        mMessageRecyclerView = findViewById(R.id.messageListView);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messagesList);
         mMessageRecyclerView.setAdapter(adapter);
 
-        mMessageRecyclerView = findViewById(R.id.messageListView);
         database = FirebaseDatabase.getInstance();
         myRefToDatabase = database.getReference("messages");
         myRefToDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println("dataSnapshot:"+dataSnapshot);
                 if (dataSnapshot.exists()){
                     Gson gson = new Gson();
                     String gsonString = gson.toJson(dataSnapshot.getValue());
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void logout()
     {
-        System.out.println("maia hi maia hu");
+        System.out.println("delogare iesire din cont...");
         FirebaseAuth.getInstance().signOut();
         Intent nextActivity = new Intent(getBaseContext(), SplashActivity.class);
         nextActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
