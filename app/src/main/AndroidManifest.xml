@@ -22,6 +22,11 @@
         </activity>
 
         <activity
+            android:name=".Activities.RegisterActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
             android:name=".Activities.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>

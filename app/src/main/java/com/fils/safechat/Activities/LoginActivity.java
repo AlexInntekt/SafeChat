@@ -94,13 +94,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
-/*    public void goToRegister(View v) {
+    public void goToRegister(View v) {
         Intent nextActivity;
         System.out.println("go to register");
         nextActivity = new Intent(getBaseContext(), RegisterActivity.class);
         startActivity(nextActivity);
     }
-
+/*
     public void goToForgotPassword(View v) {
         Intent nextActivity;
         System.out.println("go to forget password");
