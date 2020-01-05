@@ -1,9 +1,10 @@
 package com.fils.safechat.Models;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import com.fils.safechat.Services.Encrypting;
 
-public class Message {
+import java.sql.Date;
+
+public class Message implements Comparable<Message> {
     private String author;
     private String text;
     private String createdAt;
@@ -42,12 +43,21 @@ public class Message {
 
     @Override
     public String toString(){
+        Encrypting encrypting = new Encrypting();
+
         Date date;
+        String decryptedText = new String();
         try {
             date = new java.sql.Date(Long.parseLong(createdAt));
+            decryptedText = encrypting.decrypt(this.text);
         } catch(Exception e){
-            return this.text + "\n" + this.author;
+            return decryptedText + "\n" + this.author;
         }
-        return this.text + "\n" + this.author + " " + date;
+        return decryptedText + "\n" + this.author + " " + date;
+    }
+
+    @Override
+    public int compareTo(Message o) {
+        return this.createdAt.compareTo(o.createdAt);
     }
 }

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fils.safechat.Models.Message;
 import com.fils.safechat.R;
+import com.fils.safechat.Services.Encrypting;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,8 @@ import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 
@@ -84,7 +87,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 myRefToDatabase = database.getReference("messages");
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                Message message = new Message(user.getEmail(), editText.getText().toString(), Long.toString(timestamp.getTime()));
+                String stringToEncrypt = editText.getText().toString();
+                String encryptedString = new String();
+                Encrypting encrypting = new Encrypting();
+                try {
+                    encryptedString = encrypting.encrypt(stringToEncrypt);
+                }catch (Exception e){
+
+                }
+                Message message = new Message(user.getEmail(), encryptedString, Long.toString(timestamp.getTime()));
 
                 myRefToDatabase.push().setValue(message)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -107,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRefToDatabase = database.getReference("messages");
-        myRefToDatabase.addValueEventListener(new ValueEventListener() {
+        myRefToDatabase.orderByChild("createdAt").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println("dataSnapshot:"+dataSnapshot);
@@ -130,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                                 // Something went wrong!
                             }
                         }
+                        Collections.sort(messagesList);
                         adapter.notifyDataSetChanged();
                     } catch (JSONException e) {
                         e.printStackTrace();
